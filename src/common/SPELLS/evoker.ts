@@ -613,6 +613,11 @@ const spells = {
     name: 'Primacy',
     icon: 'Inv_misc_pocketwatch_01',
   },
+  TIME_CONVERGENCE_BUFF: {
+    id: 431991,
+    name: 'Time Convergence',
+    icon: 'ability_evoker_plotthefuture',
+  },
   IMMINENT_DESTRUCTION_DEV_BUFF: {
     id: 411055,
     name: 'Imminent Destruction',

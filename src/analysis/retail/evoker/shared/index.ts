@@ -32,4 +32,5 @@ export { default as Chronoflame } from './modules/talents/hero/chronowarden/Chro
 export { default as ThreadsOfFate } from './modules/talents/hero/chronowarden/ThreadsOfFate';
 export { default as Reverberations } from './modules/talents/hero/chronowarden/Reverberations';
 export { default as Primacy } from './modules/talents/hero/chronowarden/Primacy';
+export { default as TimeConvergence } from './modules/talents/hero/chronowarden/TimeConvergence';
 export * from './constants';
