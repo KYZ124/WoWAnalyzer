@@ -74,10 +74,8 @@ class MasterOfDestiny extends Analyzer {
   }
 
   onFightEnd(event: FightEndEvent) {
-    Object.keys(this.threadTimestampExists).forEach((targetID) => {
-      if (this.threadTimestampExists[Number(targetID)]) {
-        this.onThreadRemove(Number(targetID), event.timestamp);
-      }
+    Object.keys(this.threadApplyTimestamps).forEach((targetID) => {
+      this.onThreadRemove(Number(targetID), event.timestamp);
     });
   }
 
