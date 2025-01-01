@@ -23,6 +23,7 @@ import BlisteringScales from './modules/talents/BlisteringScales';
 import MoltenEmbers from './modules/talents/MoltenEmbers';
 import RumblingEarth from './modules/talents/RumblingEarth';
 import MomentumShift from './modules/talents/MomentumShift';
+import Overlord from './modules/talents/Overlord';
 
 import BuffTrackerGraph from './modules/features/BuffTrackerGraph';
 import BuffTargetHelper from './modules/features/BuffTargetHelper/BuffTargetHelper';
@@ -134,6 +135,7 @@ class CombatLogParser extends MainCombatLogParser {
     moltenEmbers: MoltenEmbers,
     rumblingEarth: RumblingEarth,
     momentumShift: MomentumShift,
+    overlord: Overlord,
 
     // hero talents
     mightOfTheBlackDragonflight: MightOfTheBlackDragonflight,
