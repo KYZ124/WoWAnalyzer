@@ -62,18 +62,18 @@ import {
   PotentMana,
   Engulf,
   Panacea,
+  ExpandedLungs,
+  FanTheFlames,
+  RedHot,
+  Reverberations,
+  Chronoflame,
+  ThreadsOfFate,
+  DoubleTime,
+  Primacy,
+  TimeConvergence,
+  MasterOfDestiny,
 } from '../shared';
 import T32Prevoker from './modules/tier/T32TierSet';
-import ExpandedLungs from '../shared/modules/talents/hero/flameshaper/ExpandedLungs';
-import FanTheFlames from '../shared/modules/talents/hero/flameshaper/FanTheFlames';
-import RedHot from '../shared/modules/talents/hero/flameshaper/RedHot';
-import Reverberations from '../shared/modules/talents/hero/chronowarden/Reverberations';
-import Chronoflame from '../shared/modules/talents/hero/chronowarden/Chronoflame';
-import ThreadsOfFate from '../shared/modules/talents/hero/chronowarden/ThreadsOfFate';
-import DoubleTime from '../shared/modules/talents/hero/chronowarden/DoubleTime';
-import Primacy from '../shared/modules/talents/hero/chronowarden/Primacy';
-import TimeConvergence from '../shared/modules/talents/hero/chronowarden/TimeConvergence';
-import MasterOfDestiny from '../shared/modules/talents/hero/chronowarden/MasterOfDestiny';
 import ConsumeFlame from './modules/talents/ConsumeFlame';
 
 class CombatLogParser extends CoreCombatLogParser {

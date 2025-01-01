@@ -19,6 +19,7 @@ import {
 } from 'analysis/retail/evoker/augmentation/constants';
 import { isGoldenOpportunityPrescience } from 'analysis/retail/evoker/augmentation/modules/normalizers/CastLinkNormalizer';
 import StatTracker from 'parser/shared/modules/StatTracker';
+import { InformationIcon } from 'interface/icons';
 
 /**
  * Aug: Casting Prescience has a 20% chance to cause your next Prescience to last 100% longer.
@@ -60,11 +61,11 @@ class GoldenOpportunity extends Analyzer {
   }
 
   onRemoveBuff(event: RemoveBuffEvent) {
-    this.onPrescienceRemove(event.targetID, event.timestamp);
+    this.onPrescienceRemove(event.targetID, event.timestamp, false);
   }
 
   onRefreshBuff(event: RefreshBuffEvent) {
-    this.onPrescienceRemove(event.targetID, event.timestamp);
+    this.onPrescienceRemove(event.targetID, event.timestamp, false);
     if (!isGoldenOpportunityPrescience(event)) {
       return;
     }
@@ -73,7 +74,7 @@ class GoldenOpportunity extends Analyzer {
 
   onFightEnd(event: FightEndEvent) {
     Object.keys(this.goldenPrescienceApplyTimestamps).forEach((targetID) => {
-      this.onPrescienceRemove(Number(targetID), event.timestamp);
+      this.onPrescienceRemove(Number(targetID), event.timestamp, true);
     });
   }
 
@@ -83,7 +84,7 @@ class GoldenOpportunity extends Analyzer {
     this.masteryAtPrescienceApplication[targetID] = this.stats.currentMasteryPercentage;
   }
 
-  onPrescienceRemove(targetID: number, timestamp: number) {
+  onPrescienceRemove(targetID: number, timestamp: number, fightEnd: boolean) {
     if (
       !this.goldenPrescienceTimestampExists[targetID] ||
       !this.goldenPrescienceApplyTimestamps[targetID]
@@ -97,7 +98,7 @@ class GoldenOpportunity extends Analyzer {
           TIMEWALKER_BASE_EXTENSION +
           this.masteryAtPrescienceApplication[targetID] * TIMEWALKER_EXTENSION_MULTIPLIER)) /
       1000;
-    if (prescienceDuration >= basePrescienceDuration * 1.9) {
+    if (!fightEnd && prescienceDuration >= basePrescienceDuration * 1.9) {
       // Use 1.9 as a threshold to account for variations in timestamps.
       this.totalPrescienceExtension += prescienceDuration / 2;
     } else {
@@ -120,7 +121,7 @@ class GoldenOpportunity extends Analyzer {
       >
         <TalentSpellText talent={TALENTS_EVOKER.GOLDEN_OPPORTUNITY_TALENT}>
           <div>
-            {formatNumber(this.totalPrescienceExtension)} sec
+            <InformationIcon /> {formatNumber(this.totalPrescienceExtension)} sec
             <small> extra duration granted</small>
           </div>
         </TalentSpellText>

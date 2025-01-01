@@ -18,6 +18,9 @@ export { default as DefensiveCastLinkNormalizer } from './modules/normalizers/De
 export { default as TwinGuardian } from './modules/MajorDefensives/TwinGuardian';
 export { default as RenewingBlaze } from './modules/MajorDefensives/RenewingBlaze';
 export { default as Engulf } from './modules/talents/hero/flameshaper/Engulf';
+export { default as ExpandedLungs } from './modules/talents/hero/flameshaper/ExpandedLungs';
+export { default as FanTheFlames } from './modules/talents/hero/flameshaper/FanTheFlames';
+export { default as RedHot } from './modules/talents/hero/flameshaper/RedHot';
 export { default as Panacea } from './modules/talents/Panacea';
 export { default as ImminentDestruction } from './modules/talents/ImminentDestruction';
 export { default as MeltArmor } from './modules/talents/hero/scalecommander/MeltArmor';
@@ -35,4 +38,5 @@ export { default as Primacy } from './modules/talents/hero/chronowarden/Primacy'
 export { default as TimeConvergence } from './modules/talents/hero/chronowarden/TimeConvergence';
 export { default as MasterOfDestiny } from './modules/talents/hero/chronowarden/MasterOfDestiny';
 export { default as GoldenOpportunity } from './modules/talents/hero/chronowarden/GoldenOpportunity';
+export { default as DoubleTime } from './modules/talents/hero/chronowarden/DoubleTime';
 export * from './constants';
