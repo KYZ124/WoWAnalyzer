@@ -20,7 +20,7 @@ class Overlord extends Analyzer {
 
   constructor(options: Options) {
     super(options);
-    this.active = this.selectedCombatant.hasTalent(TALENTS.RICOCHETING_PYROCLAST_TALENT);
+    this.active = this.selectedCombatant.hasTalent(TALENTS.OVERLORD_TALENT);
 
     this.addEventListener(
       Events.damage.by(SELECTED_PLAYER).spell(TALENTS.ERUPTION_TALENT),
@@ -78,7 +78,7 @@ class Overlord extends Analyzer {
           <VersatilityIcon /> {this.motesSpawned}
           <small>
             {' '}
-            <SpellLink spell={TALENTS.MOTES_OF_POSSIBILITY_TALENT} /> spawned
+            <SpellLink spell={TALENTS.MOTES_OF_POSSIBILITY_TALENT} /> generated
           </small>
         </TalentSpellText>
       </Statistic>

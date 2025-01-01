@@ -7,16 +7,13 @@ import TalentSpellText from 'parser/ui/TalentSpellText';
 import SPELLS from 'common/SPELLS';
 import Events, {
   ApplyBuffEvent,
-  DamageEvent,
   FightEndEvent,
-  HealEvent,
   RefreshBuffEvent,
   RemoveBuffEvent,
 } from 'parser/core/Events';
 import { formatNumber } from 'common/format';
 import { THREAD_OF_FATE_BASE_DURATION } from 'analysis/retail/evoker/shared/constants';
-import ItemHealingDone from 'parser/ui/ItemHealingDone';
-import ItemDamageDone from 'parser/ui/ItemDamageDone';
+import { DamageIcon, InformationIcon } from 'interface/icons';
 
 /**
  * Using certain abilities with a 45 second or longer base cooldown grants 5% Intellect for 15 sec. Essence abilities extend the duration by 1 sec.
@@ -27,13 +24,6 @@ class MasterOfDestiny extends Analyzer {
   totalThreadExtension = 0;
   totalThreadDuration = 0;
   totalThreadsApplied = 0;
-
-  /**
-   * TODO: Check if these are actually possible?
-   * If not, remove.
-   */
-  totalDamageGained = 0;
-  totalHealingGained = 0;
   constructor(options: Options) {
     super(options);
     this.active = this.selectedCombatant.hasTalent(TALENTS_EVOKER.MASTER_OF_DESTINY_TALENT);
@@ -56,8 +46,6 @@ class MasterOfDestiny extends Analyzer {
       this.onRemoveBuff,
     );
     this.addEventListener(Events.fightend, this.onFightEnd);
-    this.addEventListener(Events.damage.spell(SPELLS.THREAD_OF_FATE_DAMAGE), this.onDamage);
-    this.addEventListener(Events.heal.spell(SPELLS.THREAD_OF_FATE_HEALING), this.onHeal);
   }
 
   onApplyBuff(event: ApplyBuffEvent) {
@@ -77,30 +65,6 @@ class MasterOfDestiny extends Analyzer {
     Object.keys(this.threadApplyTimestamps).forEach((targetID) => {
       this.onThreadRemove(Number(targetID), event.timestamp);
     });
-  }
-
-  onDamage(event: DamageEvent) {
-    if (!event.sourceID || !this.threadTimestampExists[event.sourceID]) {
-      return;
-    }
-    const currentThreadDuration =
-      (event.timestamp - this.threadApplyTimestamps[event.sourceID]) / 1000;
-    if (currentThreadDuration < THREAD_OF_FATE_BASE_DURATION) {
-      return;
-    }
-    this.totalDamageGained += event.amount;
-  }
-
-  onHeal(event: HealEvent) {
-    if (!event.sourceID || !this.threadTimestampExists[event.sourceID]) {
-      return;
-    }
-    const currentThreadDuration =
-      (event.timestamp - this.threadApplyTimestamps[event.sourceID]) / 1000;
-    if (currentThreadDuration < THREAD_OF_FATE_BASE_DURATION) {
-      return;
-    }
-    this.totalHealingGained += event.amount;
   }
 
   onThreadApply(targetID: number, timestamp: number) {
@@ -132,15 +96,11 @@ class MasterOfDestiny extends Analyzer {
       >
         <TalentSpellText talent={TALENTS_EVOKER.MASTER_OF_DESTINY_TALENT}>
           <div>
-            {formatNumber(this.totalThreadExtension)} sec
+            <DamageIcon /> {formatNumber(this.totalThreadExtension)} sec
             <small> extra duration granted</small>
             <br />
-            {formatNumber(averageThreadDuration)} sec
+            <InformationIcon /> {formatNumber(averageThreadDuration)} sec
             <small> average buff duration</small>
-            <br />
-            <ItemDamageDone amount={this.totalDamageGained} />
-            <br />
-            <ItemHealingDone amount={this.totalHealingGained} />
           </div>
         </TalentSpellText>
       </Statistic>
