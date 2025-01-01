@@ -12,16 +12,26 @@ import Events, {
   RemoveBuffEvent,
 } from 'parser/core/Events';
 import { formatNumber } from 'common/format';
-import { PRESCIENCE_BASE_DURATION_MS } from 'analysis/retail/evoker/augmentation/constants';
+import {
+  PRESCIENCE_BASE_DURATION_MS,
+  TIMEWALKER_BASE_EXTENSION,
+  TIMEWALKER_EXTENSION_MULTIPLIER,
+} from 'analysis/retail/evoker/augmentation/constants';
 import { isGoldenOpportunityPrescience } from 'analysis/retail/evoker/augmentation/modules/normalizers/CastLinkNormalizer';
+import StatTracker from 'parser/shared/modules/StatTracker';
 
 /**
  * Aug: Casting Prescience has a 20% chance to cause your next Prescience to last 100% longer.
  * Pres [NYI]: Casting Echo has a 20% chance to cause your next Echo to copy 100% more healing.
  */
 class GoldenOpportunity extends Analyzer {
+  static dependencies = {
+    stats: StatTracker,
+  };
+  protected stats!: StatTracker;
   goldenPrescienceApplyTimestamps: { [key: number]: number } = {};
   goldenPrescienceTimestampExists: { [key: number]: boolean } = {};
+  masteryAtPrescienceApplication: { [key: number]: number } = {};
   totalPrescienceExtension = 0;
   constructor(options: Options) {
     super(options);
@@ -63,32 +73,17 @@ class GoldenOpportunity extends Analyzer {
 
   onFightEnd(event: FightEndEvent) {
     Object.keys(this.goldenPrescienceApplyTimestamps).forEach((targetID) => {
-      if (
-        !this.goldenPrescienceTimestampExists[Number(targetID)] ||
-        !this.goldenPrescienceApplyTimestamps[Number(targetID)]
-      ) {
-        return;
-      }
-      const prescienceDuration =
-        (event.timestamp - this.goldenPrescienceApplyTimestamps[Number(targetID)]) / 1000;
-      // Fight ended before the buff expired. Therefore, the extension value was not fully used.
-      // Try and manually calculate it, but we don't have an exact Mastery value so this will be approximated.
-      // TODO: Actually increase the base duration based on Mastery.
-      const extensionValue = prescienceDuration - PRESCIENCE_BASE_DURATION_MS / 1000;
-      if (extensionValue > 0) {
-        this.totalPrescienceExtension += extensionValue;
-      }
-      this.goldenPrescienceTimestampExists[Number(targetID)] = false;
+      this.onPrescienceRemove(Number(targetID), event.timestamp);
     });
   }
 
   onPrescienceApply(targetID: number, timestamp: number) {
     this.goldenPrescienceApplyTimestamps[targetID] = timestamp;
     this.goldenPrescienceTimestampExists[targetID] = true;
+    this.masteryAtPrescienceApplication[targetID] = this.stats.currentMasteryPercentage;
   }
 
   onPrescienceRemove(targetID: number, timestamp: number) {
-    //TODO: Check if the buff was removed prematurely (e.g. due to death or cancelaura) and manually calculate extension value in this case.
     if (
       !this.goldenPrescienceTimestampExists[targetID] ||
       !this.goldenPrescienceApplyTimestamps[targetID]
@@ -96,9 +91,22 @@ class GoldenOpportunity extends Analyzer {
       return;
     }
     const prescienceDuration = (timestamp - this.goldenPrescienceApplyTimestamps[targetID]) / 1000;
-    const extensionValue = prescienceDuration / 2;
-    if (extensionValue > 0) {
-      this.totalPrescienceExtension += extensionValue;
+    const basePrescienceDuration =
+      (PRESCIENCE_BASE_DURATION_MS *
+        (1 +
+          TIMEWALKER_BASE_EXTENSION +
+          this.masteryAtPrescienceApplication[targetID] * TIMEWALKER_EXTENSION_MULTIPLIER)) /
+      1000;
+    if (prescienceDuration >= basePrescienceDuration * 1.9) {
+      // Use 1.9 as a threshold to account for variations in timestamps.
+      this.totalPrescienceExtension += prescienceDuration / 2;
+    } else {
+      // Prescience was removed early due to fight end, cancelaura, or death.
+      // Approximately calculate extension value based on Mastery at the time of application.
+      const extensionValue = prescienceDuration - basePrescienceDuration;
+      if (extensionValue > 0) {
+        this.totalPrescienceExtension += extensionValue;
+      }
     }
     this.goldenPrescienceTimestampExists[targetID] = false;
   }

@@ -936,7 +936,7 @@ const SPECS = {
     role: ROLES.DPS.RANGED,
     primaryStat: PRIMARY_STAT.INTELLECT,
     masterySpellId: 406380,
-    masteryCoefficient: 0.4,
+    masteryCoefficient: 0.34, //0.5 for buff and Eons extension
     branch: GameBranch.Retail,
     ranking: {
       class: 13,

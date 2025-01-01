@@ -9,6 +9,8 @@ export const EBON_MIGHT_BASE_DURATION_MS = 10000;
 
 // Mastery aura extension
 export const TIMEWALKER_BASE_EXTENSION = 0.04;
+// Multiplier for Sands coefficient to get the extension coefficient
+export const TIMEWALKER_EXTENSION_MULTIPLIER = 0.5 / 0.34;
 
 // Sands of Time
 export const ERUPTION_EXTENSION_MS = 1000;
