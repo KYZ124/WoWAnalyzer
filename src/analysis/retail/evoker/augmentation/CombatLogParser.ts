@@ -71,6 +71,7 @@ import {
   Reverberations,
   Primacy,
   TimeConvergence,
+  MasterOfDestiny,
 } from 'analysis/retail/evoker/shared';
 
 class CombatLogParser extends MainCombatLogParser {
@@ -146,6 +147,7 @@ class CombatLogParser extends MainCombatLogParser {
     reverberations: Reverberations,
     primacy: Primacy,
     timeConvergence: TimeConvergence,
+    masterOfDestiny: MasterOfDestiny,
 
     // Features
     buffTrackerGraph: BuffTrackerGraph,

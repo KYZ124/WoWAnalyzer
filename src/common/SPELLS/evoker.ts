@@ -598,14 +598,19 @@ const spells = {
     name: 'Chronoflame',
     icon: 'inv_ability_chronowardenevoker_chronoflame',
   },
-  THREADS_OF_FATE_HEALING: {
-    id: 432896,
-    name: 'Threads of Fate',
+  THREAD_OF_FATE_BUFF: {
+    id: 431716,
+    name: 'Thread of Fate',
     icon: 'ability_evoker_sandsoftime',
   },
-  THREADS_OF_FATE_DAMAGE: {
+  THREAD_OF_FATE_HEALING: {
+    id: 432896,
+    name: 'Thread of Fate',
+    icon: 'ability_evoker_sandsoftime',
+  },
+  THREAD_OF_FATE_DAMAGE: {
     id: 432895,
-    name: 'Threads of Fate',
+    name: 'Thread of Fate',
     icon: 'ability_evoker_sandsoftime',
   },
   PRIMACY_BUFF: {

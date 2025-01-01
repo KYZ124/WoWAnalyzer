@@ -73,6 +73,7 @@ import ThreadsOfFate from '../shared/modules/talents/hero/chronowarden/ThreadsOf
 import DoubleTime from '../shared/modules/talents/hero/chronowarden/DoubleTime';
 import Primacy from '../shared/modules/talents/hero/chronowarden/Primacy';
 import TimeConvergence from '../shared/modules/talents/hero/chronowarden/TimeConvergence';
+import MasterOfDestiny from '../shared/modules/talents/hero/chronowarden/MasterOfDestiny';
 import ConsumeFlame from './modules/talents/ConsumeFlame';
 
 class CombatLogParser extends CoreCombatLogParser {
@@ -163,6 +164,7 @@ class CombatLogParser extends CoreCombatLogParser {
     consumeFlame: ConsumeFlame,
     primacy: Primacy,
     timeConvergence: TimeConvergence,
+    masterOfDestiny: MasterOfDestiny,
 
     // other
     t32Prevoker: T32Prevoker,
