@@ -377,9 +377,6 @@ const EVENT_LINKS: EventLink[] = [
     backwardBufferMs: CAST_BUFFER_MS,
     isActive: (C) => C.hasTalent(TALENTS.DREAM_OF_SPRING_TALENT),
     maximumLinks: 1,
-    additionalCondition(_linkingEvent, referencedEvent) {
-      return !HasRelatedEvent(referencedEvent, ERUPTION_ESSENCE_BURST_CONSUME);
-    },
   },
 ];
 
@@ -489,6 +486,14 @@ export function isVolcanicUpsurgeEruption(event: CastEvent) {
 
 export function isGoldenOpportunityPrescience(event: ApplyBuffEvent | RefreshBuffEvent) {
   return HasRelatedEvent(event, GOLDEN_OPPORTUNITY_CONSUME);
+}
+
+export function eruptionConsumedEssenceBurst(event: CastEvent) {
+  return HasRelatedEvent(event, ERUPTION_ESSENCE_BURST_CONSUME);
+}
+
+export function dreamConsumedEssenceBurst(event: CastEvent) {
+  return HasRelatedEvent(event, DREAM_ESSENCE_BURST_CONSUME);
 }
 
 export default CastLinkNormalizer;
