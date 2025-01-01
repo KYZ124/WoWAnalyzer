@@ -664,10 +664,15 @@ const spells = {
     name: 'Volcanic Upsurge',
     icon: 'ability_evoker_earthensky',
   },
-  GOLDEN_OPPORTUNITY: {
+  GOLDEN_OPPORTUNITY_BUFF: {
     id: 459878,
     name: 'Golden Opportunity',
     icon: 'achievement_faction_goldenlotus',
+  },
+  MOTES_OF_ACCELERATION_BUFF: {
+    id: 432061,
+    name: 'Motes of Acceleration',
+    icon: 'item_timemote_icon',
   },
   // endregion
 } satisfies Record<string, Spell>;

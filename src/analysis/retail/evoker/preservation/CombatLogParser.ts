@@ -72,6 +72,7 @@ import {
   Primacy,
   TimeConvergence,
   MasterOfDestiny,
+  MotesOfAcceleration,
 } from '../shared';
 import T32Prevoker from './modules/tier/T32TierSet';
 import ConsumeFlame from './modules/talents/ConsumeFlame';
@@ -165,6 +166,7 @@ class CombatLogParser extends CoreCombatLogParser {
     primacy: Primacy,
     timeConvergence: TimeConvergence,
     masterOfDestiny: MasterOfDestiny,
+    motesOfAcceleration: MotesOfAcceleration,
 
     // other
     t32Prevoker: T32Prevoker,
