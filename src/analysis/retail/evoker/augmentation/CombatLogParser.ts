@@ -72,6 +72,7 @@ import {
   Primacy,
   TimeConvergence,
   MasterOfDestiny,
+  GoldenOpportunity,
 } from 'analysis/retail/evoker/shared';
 
 class CombatLogParser extends MainCombatLogParser {
@@ -148,6 +149,7 @@ class CombatLogParser extends MainCombatLogParser {
     primacy: Primacy,
     timeConvergence: TimeConvergence,
     masterOfDestiny: MasterOfDestiny,
+    goldenOpportunity: GoldenOpportunity,
 
     // Features
     buffTrackerGraph: BuffTrackerGraph,

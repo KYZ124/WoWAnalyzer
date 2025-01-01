@@ -664,6 +664,11 @@ const spells = {
     name: 'Volcanic Upsurge',
     icon: 'ability_evoker_earthensky',
   },
+  GOLDEN_OPPORTUNITY: {
+    id: 459878,
+    name: 'Golden Opportunity',
+    icon: 'achievement_faction_goldenlotus',
+  },
   // endregion
 } satisfies Record<string, Spell>;
 

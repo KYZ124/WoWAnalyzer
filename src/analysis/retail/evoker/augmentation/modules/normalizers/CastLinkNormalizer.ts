@@ -56,6 +56,8 @@ export const UPHEAVAL_REVERBERATION_BUFFER = 12_000; // This DoT last a very lon
 
 export const VOLCANIC_UPSURGE_CONSUME = 'volcanicUpsurgeConsume';
 
+const GOLDEN_OPPORTUNITY_CONSUME = 'goldenOpportunityConsume';
+
 const PRESCIENCE_BUFFER = 150;
 const CAST_BUFFER_MS = 100;
 const BREATH_EBON_BUFFER = 250;
@@ -336,6 +338,18 @@ const EVENT_LINKS: EventLink[] = [
     isActive: (C) => C.has4PieceByTier(TIERS.TWW1),
     maximumLinks: 1,
   },
+  {
+    linkRelation: GOLDEN_OPPORTUNITY_CONSUME,
+    reverseLinkRelation: GOLDEN_OPPORTUNITY_CONSUME,
+    linkingEventId: SPELLS.PRESCIENCE_BUFF.id,
+    linkingEventType: [EventType.ApplyBuff, EventType.RefreshBuff],
+    referencedEventId: SPELLS.GOLDEN_OPPORTUNITY.id,
+    referencedEventType: EventType.RemoveBuff,
+    anyTarget: true,
+    // Same buffer as Prescience casts
+    forwardBufferMs: PRESCIENCE_BUFFER,
+    backwardBufferMs: PRESCIENCE_BUFFER,
+  },
 ];
 
 class CastLinkNormalizer extends EventLinkNormalizer {
@@ -440,6 +454,10 @@ export function getMassEruptionDamageEvents(event: CastEvent): DamageEvent[] {
 
 export function isVolcanicUpsurgeEruption(event: CastEvent) {
   return HasRelatedEvent(event, VOLCANIC_UPSURGE_CONSUME);
+}
+
+export function isGoldenOpportunityPrescience(event: ApplyBuffEvent | RefreshBuffEvent) {
+  return HasRelatedEvent(event, GOLDEN_OPPORTUNITY_CONSUME);
 }
 
 export default CastLinkNormalizer;

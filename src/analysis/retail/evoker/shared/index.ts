@@ -34,4 +34,5 @@ export { default as Reverberations } from './modules/talents/hero/chronowarden/R
 export { default as Primacy } from './modules/talents/hero/chronowarden/Primacy';
 export { default as TimeConvergence } from './modules/talents/hero/chronowarden/TimeConvergence';
 export { default as MasterOfDestiny } from './modules/talents/hero/chronowarden/MasterOfDestiny';
+export { default as GoldenOpportunity } from './modules/talents/hero/chronowarden/GoldenOpportunity';
 export * from './constants';
