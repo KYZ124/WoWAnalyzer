@@ -23,12 +23,12 @@ class MotesOfAcceleration extends Analyzer {
 
     this.addEventListener(
       Events.applybuff.by(SELECTED_PLAYER).spell(SPELLS.MOTES_OF_ACCELERATION_BUFF),
-      this.onApplyBuff,
+      this.onApplyRefreshBuff,
     );
 
     this.addEventListener(
       Events.refreshbuff.by(SELECTED_PLAYER).spell(SPELLS.MOTES_OF_ACCELERATION_BUFF),
-      this.onRefreshBuff,
+      this.onApplyRefreshBuff,
     );
   }
 
@@ -36,11 +36,7 @@ class MotesOfAcceleration extends Analyzer {
     this.motesSpawned += 3;
   }
 
-  onApplyBuff(event: ApplyBuffEvent) {
-    this.motesCollected += 1;
-  }
-
-  onRefreshBuff(event: RefreshBuffEvent) {
+  onApplyRefreshBuff(event: ApplyBuffEvent | RefreshBuffEvent) {
     this.motesCollected += 1;
   }
 

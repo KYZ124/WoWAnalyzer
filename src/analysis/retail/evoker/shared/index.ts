@@ -23,6 +23,7 @@ export { default as FanTheFlames } from './modules/talents/hero/flameshaper/FanT
 export { default as RedHot } from './modules/talents/hero/flameshaper/RedHot';
 export { default as Panacea } from './modules/talents/Panacea';
 export { default as ImminentDestruction } from './modules/talents/ImminentDestruction';
+export { default as TimeSpiral } from './modules/talents/TimeSpiral';
 export { default as MeltArmor } from './modules/talents/hero/scalecommander/MeltArmor';
 export { default as MassDisintegrate } from './modules/talents/hero/scalecommander/MassDisintegrate';
 export { default as MightOfTheBlackDragonflight } from './modules/talents/hero/scalecommander/MightOfTheBlackDragonflight';

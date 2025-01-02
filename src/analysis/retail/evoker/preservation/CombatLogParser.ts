@@ -73,6 +73,7 @@ import {
   TimeConvergence,
   MasterOfDestiny,
   MotesOfAcceleration,
+  TimeSpiral,
 } from '../shared';
 import T32Prevoker from './modules/tier/T32TierSet';
 import ConsumeFlame from './modules/talents/ConsumeFlame';
@@ -113,6 +114,7 @@ class CombatLogParser extends CoreCombatLogParser {
     sourceOfMagic: SourceOfMagic,
     potentMana: PotentMana,
     panacea: Panacea,
+    timeSpiral: TimeSpiral,
 
     // Empower Normalizer
     empowerNormalizer: EmpowerNormalizer,

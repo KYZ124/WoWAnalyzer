@@ -674,6 +674,71 @@ const spells = {
     name: 'Motes of Acceleration',
     icon: 'item_timemote_icon',
   },
+  TIME_SPIRAL_DEATH_KNIGHT_BUFF: {
+    id: 375226,
+    name: 'Time Spiral',
+    icon: 'ability_evoker_timespiral',
+  },
+  TIME_SPIRAL_DEMON_HUNTER_BUFF: {
+    id: 375229,
+    name: 'Time Spiral',
+    icon: 'ability_evoker_timespiral',
+  },
+  TIME_SPIRAL_DRUID_BUFF: {
+    id: 375230,
+    name: 'Time Spiral',
+    icon: 'ability_evoker_timespiral',
+  },
+  TIME_SPIRAL_EVOKER_BUFF: {
+    id: 375234,
+    name: 'Time Spiral',
+    icon: 'ability_evoker_timespiral',
+  },
+  TIME_SPIRAL_HUNTER_BUFF: {
+    id: 375238,
+    name: 'Time Spiral',
+    icon: 'ability_evoker_timespiral',
+  },
+  TIME_SPIRAL_MAGE_BUFF: {
+    id: 375240,
+    name: 'Time Spiral',
+    icon: 'ability_evoker_timespiral',
+  },
+  TIME_SPIRAL_MONK_BUFF: {
+    id: 375252,
+    name: 'Time Spiral',
+    icon: 'ability_evoker_timespiral',
+  },
+  TIME_SPIRAL_PALADIN_BUFF: {
+    id: 375253,
+    name: 'Time Spiral',
+    icon: 'ability_evoker_timespiral',
+  },
+  TIME_SPIRAL_PRIEST_BUFF: {
+    id: 375254,
+    name: 'Time Spiral',
+    icon: 'ability_evoker_timespiral',
+  },
+  TIME_SPIRAL_ROGUE_BUFF: {
+    id: 375255,
+    name: 'Time Spiral',
+    icon: 'ability_evoker_timespiral',
+  },
+  TIME_SPIRAL_SHAMAN_BUFF: {
+    id: 375256,
+    name: 'Time Spiral',
+    icon: 'ability_evoker_timespiral',
+  },
+  TIME_SPIRAL_WARLOCK_BUFF: {
+    id: 375257,
+    name: 'Time Spiral',
+    icon: 'ability_evoker_timespiral',
+  },
+  TIME_SPIRAL_WARRIOR_BUFF: {
+    id: 375258,
+    name: 'Time Spiral',
+    icon: 'ability_evoker_timespiral',
+  },
   // endregion
 } satisfies Record<string, Spell>;
 

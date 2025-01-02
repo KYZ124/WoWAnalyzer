@@ -68,6 +68,7 @@ import {
   ExpandedLungs,
   FanTheFlames,
   RedHot,
+  TimeSpiral,
 } from 'analysis/retail/evoker/shared';
 
 class CombatLogParser extends MainCombatLogParser {
@@ -96,6 +97,7 @@ class CombatLogParser extends MainCombatLogParser {
     defensiveNormalizer: DefensiveNormalizer,
     twinGuardian: TwinGuardian,
     renewingBlaze: RenewingBlaze,
+    timeSpiral: TimeSpiral,
 
     // Core
     abilities: Abilities,

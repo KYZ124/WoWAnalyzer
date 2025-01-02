@@ -14,6 +14,8 @@ export const BASE_EVOKER_RANGE = 25;
 export const CLOBBERING_SWEEP_CDR = 45;
 export const HEAVY_WINGBEATS_CDR = 45;
 
+export const TIME_SPIRAL_BASE_DURATION = 10;
+
 export const EMPOWER_BASE_GCD = 1500;
 export const EMPOWER_CANCELED_GCD = 750;
 export const EMPOWER_MINIMUM_GCD = 500;
