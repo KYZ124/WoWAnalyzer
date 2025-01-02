@@ -1,4 +1,10 @@
-import { ApplyBuffEvent, EventType, HasRelatedEvent, RemoveBuffEvent } from 'parser/core/Events';
+import {
+  ApplyBuffEvent,
+  EventType,
+  HasRelatedEvent,
+  RefreshBuffEvent,
+  RemoveBuffEvent,
+} from 'parser/core/Events';
 import TALENTS from 'common/TALENTS/evoker';
 import SPELLS from 'common/SPELLS/evoker';
 import EventLinkNormalizer, { EventLink } from 'parser/core/EventLinkNormalizer';
@@ -58,7 +64,7 @@ class MobilityCastLinkNormalizer extends EventLinkNormalizer {
   }
 }
 
-export function hasTimeSpiralCastEvent(event: ApplyBuffEvent) {
+export function hasTimeSpiralCastEvent(event: ApplyBuffEvent | RefreshBuffEvent) {
   return HasRelatedEvent(event, TIME_SPIRAL_BUFF_APPLY);
 }
 

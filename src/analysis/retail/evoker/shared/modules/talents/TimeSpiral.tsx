@@ -5,7 +5,12 @@ import STATISTIC_ORDER from 'parser/ui/STATISTIC_ORDER';
 import { TALENTS_EVOKER } from 'common/TALENTS';
 import TalentSpellText from 'parser/ui/TalentSpellText';
 import SPELLS from 'common/SPELLS';
-import Events, { ApplyBuffEvent, CastEvent, RemoveBuffEvent } from 'parser/core/Events';
+import Events, {
+  ApplyBuffEvent,
+  CastEvent,
+  RefreshBuffEvent,
+  RemoveBuffEvent,
+} from 'parser/core/Events';
 import { InformationIcon, SoupIcon, WarningIcon } from 'interface/icons';
 import { TIME_SPIRAL_BASE_DURATION } from '../../constants';
 import {
@@ -59,21 +64,23 @@ class TimeSpiral extends Analyzer {
 
     this.addEventListener(
       Events.applybuff.by(SELECTED_PLAYER).spell(timeSpiralBuffs),
-      this.onApplyBuff,
+      this.onApplyRefreshBuff,
+    );
+
+    this.addEventListener(
+      Events.refreshbuff.by(SELECTED_PLAYER).spell(timeSpiralBuffs),
+      this.onApplyRefreshBuff,
     );
 
     this.addEventListener(
       Events.removebuff.by(SELECTED_PLAYER).spell(timeSpiralBuffs),
       this.onRemoveBuff,
     );
-
-    //TODO: Check what happens if another player refreshes Time Spiral.
-    //Currently, refresh isn't implemented due to the high unlikelyhood of the player refreshing their own Time Spiral.
   }
 
   onHoverCast(event: CastEvent) {}
 
-  onApplyBuff(event: ApplyBuffEvent) {
+  onApplyRefreshBuff(event: ApplyBuffEvent | RefreshBuffEvent) {
     if (!hasTimeSpiralCastEvent(event) && event.targetID !== this.selectedCombatant.id) {
       //Precast Time Spiral, cannot determine event duration.
       //For personal Time Spirals, we can instead use a CastLink to determine if it was consumed.
@@ -126,14 +133,8 @@ class TimeSpiral extends Analyzer {
   }
 
   statistic() {
-    let externalBuffsWasted = this.externalBuffsApplied - this.externalBuffsUsed;
-    if (externalBuffsWasted < 0) {
-      externalBuffsWasted = 0;
-    }
-    let personalBuffsWasted = this.personalBuffsApplied - this.personalBuffsUsed;
-    if (personalBuffsWasted < 0) {
-      personalBuffsWasted = 0;
-    }
+    const externalBuffsWasted = Math.max(this.externalBuffsApplied - this.externalBuffsUsed, 0);
+    const personalBuffsWasted = Math.max(this.personalBuffsApplied - this.personalBuffsUsed, 0);
     return (
       <Statistic
         position={STATISTIC_ORDER.OPTIONAL(13)}
