@@ -14,7 +14,7 @@ import {
 } from 'analysis/retail/evoker/augmentation/constants';
 import StatTracker from 'parser/shared/modules/StatTracker';
 import SPECS from 'game/SPECS';
-//import { hasTimeSpiralCastEvent } from '../normalizers/MobilityCastLinkNormalizer';
+import { hasTimeSpiralCastEvent } from '../normalizers/MobilityCastLinkNormalizer';
 /**
  * Grants all players in the group a buff that grants them 1 free cast of their movement ability within 10 sec.
  * Aug: Available duration increased by Mastery.
@@ -71,9 +71,9 @@ class TimeSpiral extends Analyzer {
 
   onApplyBuff(event: ApplyBuffEvent) {
     //TODO: Fix this, currently it always just returns false.
-    //if (!hasTimeSpiralCastEvent(event)) {
-    //return;
-    //}
+    if (!hasTimeSpiralCastEvent(event)) {
+      return;
+    }
     this.buffsApplied += 1;
     this.timeSpiralApplyTimestamps[event.targetID] = event.timestamp;
     this.timeSpiralTimestampExists[event.targetID] = true;

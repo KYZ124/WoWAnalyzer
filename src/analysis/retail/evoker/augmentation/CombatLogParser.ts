@@ -57,6 +57,7 @@ import {
   ObsidianScales,
   DefensiveNormalizer,
   DefensiveCastLinkNormalizer,
+  MobilityCastLinkNormalizer,
   TwinGuardian,
   RenewingBlaze,
   ImminentDestruction,
@@ -102,6 +103,7 @@ class CombatLogParser extends MainCombatLogParser {
 
     obsidianScales: ObsidianScales,
     defensiveCastLinkNormalizer: DefensiveCastLinkNormalizer,
+    mobilityCastLinkNormalizer: MobilityCastLinkNormalizer,
     defensiveNormalizer: DefensiveNormalizer,
     twinGuardian: TwinGuardian,
     renewingBlaze: RenewingBlaze,
