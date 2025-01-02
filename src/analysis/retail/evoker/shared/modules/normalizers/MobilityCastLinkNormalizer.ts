@@ -1,10 +1,11 @@
-import { ApplyBuffEvent, EventType, HasRelatedEvent } from 'parser/core/Events';
+import { ApplyBuffEvent, EventType, HasRelatedEvent, RemoveBuffEvent } from 'parser/core/Events';
 import TALENTS from 'common/TALENTS/evoker';
 import SPELLS from 'common/SPELLS/evoker';
 import EventLinkNormalizer, { EventLink } from 'parser/core/EventLinkNormalizer';
 import { Options } from 'parser/core/Module';
 
 const TIME_SPIRAL_BUFF_APPLY = 'timeSpiralBuffApply'; // links cast to buff apply
+const TIME_SPIRAL_PERSONAL_CONSUME = 'timeSpiralPersonalConsume'; // links Hover cast to buff consume
 
 const CAST_BUFFER = 50;
 
@@ -36,6 +37,19 @@ const EVENT_LINKS: EventLink[] = [
     backwardBufferMs: CAST_BUFFER,
     isActive: (C) => C.hasTalent(TALENTS.TIME_SPIRAL_TALENT),
   },
+  {
+    linkRelation: TIME_SPIRAL_PERSONAL_CONSUME,
+    reverseLinkRelation: TIME_SPIRAL_PERSONAL_CONSUME,
+    linkingEventId: SPELLS.HOVER.id,
+    linkingEventType: EventType.Cast,
+    referencedEventId: SPELLS.TIME_SPIRAL_EVOKER_BUFF.id,
+    referencedEventType: EventType.RemoveBuff,
+    anyTarget: true,
+    forwardBufferMs: CAST_BUFFER,
+    backwardBufferMs: CAST_BUFFER,
+    isActive: (C) => C.hasTalent(TALENTS.TIME_SPIRAL_TALENT),
+    maximumLinks: 1,
+  },
 ];
 
 class MobilityCastLinkNormalizer extends EventLinkNormalizer {
@@ -46,6 +60,10 @@ class MobilityCastLinkNormalizer extends EventLinkNormalizer {
 
 export function hasTimeSpiralCastEvent(event: ApplyBuffEvent) {
   return HasRelatedEvent(event, TIME_SPIRAL_BUFF_APPLY);
+}
+
+export function hasTimeSpiralConsumeEvent(event: RemoveBuffEvent) {
+  return HasRelatedEvent(event, TIME_SPIRAL_PERSONAL_CONSUME);
 }
 
 export default MobilityCastLinkNormalizer;

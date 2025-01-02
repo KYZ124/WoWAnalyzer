@@ -6,7 +6,7 @@ import { TALENTS_EVOKER } from 'common/TALENTS';
 import TalentSpellText from 'parser/ui/TalentSpellText';
 import SPELLS from 'common/SPELLS';
 import Events, { ApplyBuffEvent, CastEvent, RemoveBuffEvent } from 'parser/core/Events';
-import { InformationIcon, WarningIcon } from 'interface/icons';
+import { InformationIcon, SoupIcon, WarningIcon } from 'interface/icons';
 import { TIME_SPIRAL_BASE_DURATION } from '../../constants';
 import {
   TIMEWALKER_BASE_EXTENSION,
@@ -14,7 +14,11 @@ import {
 } from 'analysis/retail/evoker/augmentation/constants';
 import StatTracker from 'parser/shared/modules/StatTracker';
 import SPECS from 'game/SPECS';
-import { hasTimeSpiralCastEvent } from '../normalizers/MobilityCastLinkNormalizer';
+import {
+  hasTimeSpiralCastEvent,
+  hasTimeSpiralConsumeEvent,
+} from '../normalizers/MobilityCastLinkNormalizer';
+import SpellLink from 'interface/SpellLink';
 /**
  * Grants all players in the group a buff that grants them 1 free cast of their movement ability within 10 sec.
  * Aug: Available duration increased by Mastery.
@@ -27,8 +31,8 @@ class TimeSpiral extends Analyzer {
   timeSpiralApplyTimestamps: { [key: number]: number } = {};
   timeSpiralTimestampExists: { [key: number]: boolean } = {};
   timeSpiralDuration: { [key: number]: number } = {};
-  buffsApplied = 0;
-  buffsUsed = 0;
+  externalBuffsApplied = 0;
+  externalBuffsUsed = 0;
   personalBuffsApplied = 0;
   personalBuffsUsed = 0;
   constructor(options: Options) {
@@ -70,28 +74,40 @@ class TimeSpiral extends Analyzer {
   onHoverCast(event: CastEvent) {}
 
   onApplyBuff(event: ApplyBuffEvent) {
-    //TODO: Fix this, currently it always just returns false.
-    if (!hasTimeSpiralCastEvent(event)) {
+    if (!hasTimeSpiralCastEvent(event) && event.targetID !== this.selectedCombatant.id) {
+      //Precast Time Spiral, cannot determine event duration.
+      //For personal Time Spirals, we can instead use a CastLink to determine if it was consumed.
       return;
     }
-    this.buffsApplied += 1;
+    if (event.targetID === this.selectedCombatant.id) {
+      this.personalBuffsApplied += 1;
+    } else {
+      this.externalBuffsApplied += 1;
+    }
     this.timeSpiralApplyTimestamps[event.targetID] = event.timestamp;
     this.timeSpiralTimestampExists[event.targetID] = true;
     this.timeSpiralDuration[event.targetID] = this.calculateTimeSpiralBuffDuration();
   }
 
   onRemoveBuff(event: RemoveBuffEvent) {
-    if (!this.timeSpiralTimestampExists[event.targetID]) {
-      //Can occur if Time Spiral was precast, but we have no way of knowing the buff duration in this case.
-      return;
-    }
-    // 900 (0.9 * 1000) is used to account for variations in timestamp.
-    if (
-      event.timestamp <
-      this.timeSpiralApplyTimestamps[event.targetID] + this.timeSpiralDuration[event.targetID] * 900
-    ) {
-      // This can also be triggered by the player dying or cancelling the buff, but the former would require querying to check, and the latter is unlikely.
-      this.buffsUsed += 1;
+    if (event.targetID === this.selectedCombatant.id) {
+      if (hasTimeSpiralConsumeEvent(event)) {
+        this.personalBuffsUsed += 1;
+      }
+    } else {
+      if (!this.timeSpiralTimestampExists[event.targetID]) {
+        //Can occur if Time Spiral was precast, but we have no way of knowing the buff duration in this case.
+        return;
+      }
+      // 900 (0.9 * 1000) is used to account for variations in timestamp.
+      if (
+        event.timestamp <
+        this.timeSpiralApplyTimestamps[event.targetID] +
+          this.timeSpiralDuration[event.targetID] * 900
+      ) {
+        // This can also be triggered by the player dying or cancelling the buff, but the former would require querying to check, and the latter is unlikely.
+        this.externalBuffsUsed += 1;
+      }
     }
     this.timeSpiralTimestampExists[event.targetID] = false;
   }
@@ -110,23 +126,42 @@ class TimeSpiral extends Analyzer {
   }
 
   statistic() {
-    let buffsWasted = this.buffsApplied - this.buffsUsed;
-    if (buffsWasted < 0) {
-      buffsWasted = 0;
+    let externalBuffsWasted = this.externalBuffsApplied - this.externalBuffsUsed;
+    if (externalBuffsWasted < 0) {
+      externalBuffsWasted = 0;
+    }
+    let personalBuffsWasted = this.personalBuffsApplied - this.personalBuffsUsed;
+    if (personalBuffsWasted < 0) {
+      personalBuffsWasted = 0;
     }
     return (
       <Statistic
         position={STATISTIC_ORDER.OPTIONAL(13)}
         size="flexible"
         category={STATISTIC_CATEGORY.TALENTS}
+        tooltip={
+          <>Other players dying with or cancelling the buff will also trigger the 'used' count.</>
+        }
       >
         <TalentSpellText talent={TALENTS_EVOKER.TIME_SPIRAL_TALENT}>
           <div>
-            <InformationIcon /> {this.buffsUsed}
-            <small> buffs used</small>
+            <SoupIcon /> {this.personalBuffsUsed}
+            <small>
+              {' '}
+              personal <SpellLink spell={SPELLS.HOVER} /> casts gained
+            </small>
             <br />
-            <WarningIcon /> {buffsWasted}
-            <small> buffs unused</small>
+            <WarningIcon /> {personalBuffsWasted}
+            <small>
+              {' '}
+              personal <SpellLink spell={SPELLS.HOVER} /> casts wasted
+            </small>
+            <br />
+            <InformationIcon /> {this.externalBuffsUsed}
+            <small> external buffs used</small>
+            <br />
+            <WarningIcon /> {externalBuffsWasted}
+            <small> external buffs unused</small>
           </div>
         </TalentSpellText>
       </Statistic>
