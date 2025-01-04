@@ -151,7 +151,6 @@ class TimeSpiral extends Analyzer {
               {' '}
               personal <SpellLink spell={SPELLS.HOVER} /> casts gained
             </small>
-
             {personalBuffsWasted > 0 && (
               <>
                 <br />
@@ -162,11 +161,9 @@ class TimeSpiral extends Analyzer {
                 </small>
               </>
             )}
-
             <br />
             <InformationIcon /> {this.externalBuffsUsed}
             <small> external buffs used</small>
-            
             {personalBuffsWasted > 0 && (
               <>
                 <br />

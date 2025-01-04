@@ -33,11 +33,6 @@ class MasterOfDestiny extends Analyzer {
       this.onApplyBuff,
     );
     this.addEventListener(
-      /**
-       * TODO: Check what happens if all eligible players have a Thread of Fate and it is reapplied by a different player.
-       * Currently assumes that it removes the previous buff, then applies a new one, so refreshbuff does not need to handle the case where a different player is refreshing the buff.
-       * Very unlikely case to happen in practice.
-       */
       Events.refreshbuff.by(SELECTED_PLAYER).spell(SPELLS.THREAD_OF_FATE_BUFF),
       this.onRefreshBuff,
     );
