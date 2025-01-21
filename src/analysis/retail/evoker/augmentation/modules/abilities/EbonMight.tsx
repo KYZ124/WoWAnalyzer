@@ -229,7 +229,7 @@ class EbonMight extends Analyzer {
       const reverbEvents = GetRelatedEvents<DamageEvent>(event, UPHEAVAL_REVERBERATION_DAM_LINK);
 
       reverbEvents.forEach((reverbEvent) => {
-        this.personalEbonMightDamage = calculateEffectiveDamage(
+        this.personalEbonMightDamage += calculateEffectiveDamage(
           reverbEvent,
           this.personalDamageAmp,
         );
