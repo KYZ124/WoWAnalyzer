@@ -156,7 +156,7 @@ const BreathOfEonsSection: FC<Props> = ({
                   <TooltipElement
                     content={t({
                       message:
-                        'This indicates the number of players who contributed an unusually low amount of damage during the Breath of Eons window. This can often occur on fights where the raid is split and they are not attacking the same target as you.',
+                        'Players who contributed lower than expected damage. This often occurs if the raid is split or they were attacking a different target. Recasting Ebon Might can avoid splitting its effects onto them.',
                     })}
                   >
                     Low damage players
