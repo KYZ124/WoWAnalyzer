@@ -596,7 +596,9 @@ class BreathOfEonsRotational extends Analyzer {
       perfWindow.potentialLostDamage =
         potentialDamagePerTarget * perfWindow.earlyDeaths * PRIO_MULTIPLIER;
 
+      // If you didn't hit anything, leave low damage players empty.
       if (perfWindow.successfulHits > 0) {
+        // 0.25 selected to avoid catching players who just had a bad time
         const lowDamageThreshold =
           calculateIndexToUse(this.individualDamageBreakdown.map((entry) => entry.damage)) * 0.25;
         this.individualDamageBreakdown.forEach((entry) => {
