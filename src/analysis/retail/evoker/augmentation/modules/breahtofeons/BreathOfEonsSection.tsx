@@ -149,6 +149,21 @@ const BreathOfEonsSection: FC<Props> = ({
                   />
                 </td>
               </tr>
+
+              <tr>
+                <td>
+                  {' '}
+                  <TooltipElement
+                    content={t({
+                      message:
+                        'This indicates the number of players who contributed an unusually low amount of damage during the Breath of Eons window. This can often occur on fights where the raid is split and they are not attacking the same target as you.',
+                    })}
+                  >
+                    Low damage players
+                  </TooltipElement>
+                </td>
+                <td>{window.breathPerformance.lowDamagePlayers.length} players</td>
+              </tr>
             </tbody>
             <tbody>
               <tr>

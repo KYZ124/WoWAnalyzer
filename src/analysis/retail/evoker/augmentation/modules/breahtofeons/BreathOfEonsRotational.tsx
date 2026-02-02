@@ -32,6 +32,7 @@ import Combatants from 'parser/shared/modules/Combatants';
 import { SpellTracker } from 'analysis/retail/evoker/shared/modules/components/ExplanationGraph';
 import { BREATH_OF_EONS_SPELLS } from '../../constants';
 import Spell from 'common/SPELLS/Spell';
+import SPECS from 'game/SPECS';
 
 export interface BreathOfEonsWindows {
   flightData: SpellTracker[];
@@ -64,6 +65,11 @@ interface BreathWindowPerformance {
   damage: number;
   buffedPlayers: Map<string, Combatant>;
   earlyDeadMobs: RemoveDebuffEvent[];
+  lowDamagePlayers: individualDamageBreakdown[];
+}
+interface individualDamageBreakdown {
+  playerID: number;
+  damage: number;
 }
 
 /**
@@ -133,6 +139,8 @@ class BreathOfEonsRotational extends Analyzer {
   trackedPotions = [Potions.TEMPERED_POTION];
 
   foundTrinket = undefined;
+
+  individualDamageBreakdown: individualDamageBreakdown[] = [];
 
   constructor(options: Options) {
     super(options);
@@ -326,6 +334,7 @@ class BreathOfEonsRotational extends Analyzer {
         damage: 0,
         buffedPlayers: currentBuffedTargets,
         earlyDeadMobs: [],
+        lowDamagePlayers: [],
       },
       start: 0,
       end: 0,
@@ -517,6 +526,23 @@ class BreathOfEonsRotational extends Analyzer {
     } else {
       damageEvents.forEach((damageEvent) => {
         perfWindow.damage += damageEvent.amount + (damageEvent.absorbed ?? 0);
+        // Ignore own damage and any other Augs
+        if (
+          damageEvent.supportID &&
+          this.combatants.players[damageEvent.supportID].spec != SPECS.AUGMENTATION_EVOKER
+        ) {
+          const playerDamage = this.individualDamageBreakdown.find(
+            (entry) => entry.playerID === damageEvent.supportID,
+          );
+          if (playerDamage) {
+            playerDamage.damage += damageEvent.amount + (damageEvent.absorbed ?? 0);
+          } else {
+            this.individualDamageBreakdown.push({
+              playerID: damageEvent.supportID,
+              damage: damageEvent.amount + (damageEvent.absorbed ?? 0),
+            });
+          }
+        }
       });
       perfWindow.successfulHits += 1;
     }
@@ -569,6 +595,16 @@ class BreathOfEonsRotational extends Analyzer {
       const potentialDamagePerTarget = perfWindow.damage / perfWindow.successfulHits;
       perfWindow.potentialLostDamage =
         potentialDamagePerTarget * perfWindow.earlyDeaths * PRIO_MULTIPLIER;
+
+      if (perfWindow.successfulHits > 0) {
+        const lowDamageThreshold =
+          calculateIndexToUse(this.individualDamageBreakdown.map((entry) => entry.damage)) * 0.25;
+        this.individualDamageBreakdown.forEach((entry) => {
+          if (entry.damage < lowDamageThreshold) {
+            breathWindow.breathPerformance.lowDamagePlayers.push(entry);
+          }
+        });
+      }
     }
   }
 
@@ -626,3 +662,14 @@ class BreathOfEonsRotational extends Analyzer {
 }
 
 export default BreathOfEonsRotational;
+
+function calculateIndexToUse(values: number[]): number {
+  const arr = [...values];
+  arr.sort((a, b) => a - b);
+
+  // 0.625 is chosen to ensure a player above the median is selected at most raid sizes.
+  // The median cannot be used, as if the raid is evenly split, this would select a player in the other split.
+  const index = Math.floor(arr.length * 0.625);
+
+  return arr[index];
+}
