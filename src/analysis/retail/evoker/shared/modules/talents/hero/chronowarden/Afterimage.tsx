@@ -32,6 +32,9 @@ class Afterimage extends Analyzer {
   constructor(options: Options) {
     super(options);
     this.active = this.selectedCombatant.hasTalent(TALENTS.CHRONAL_DYNAMO_TALENT);
+    // If something like the Undermine tier set is added again, there will need to be handling
+    // for the empowers without empowerEnd events.
+    // This also applies for Preservation with Stasis Dream Breaths, when implemented.
     this.addEventListener(
       Events.empowerEnd
         .by(SELECTED_PLAYER)
