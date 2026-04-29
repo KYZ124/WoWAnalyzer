@@ -1,4 +1,4 @@
-import {
+import CastLinkNormalizer, {
   PUPIL_OF_ALEXSTRASZA_LINK,
   UPHEAVAL_CAST_DAM_LINK,
 } from 'analysis/retail/evoker/augmentation/modules/normalizers/CastLinkNormalizer';
@@ -8,12 +8,17 @@ import { Options } from 'parser/core/Analyzer';
 import EventLinkNormalizer, { EventLink } from 'parser/core/EventLinkNormalizer';
 import {
   DamageEvent,
+  EmpowerEndEvent,
   EventType,
   GetRelatedEvent,
+  GetRelatedEvents,
   HasRelatedEvent,
   HealEvent,
 } from 'parser/core/Events';
-import { isFromLeapingFlames, LIVING_FLAME_CAST_HIT } from './LeapingFlamesNormalizer';
+import LeapingFlamesNormalizer, {
+  isFromLeapingFlames,
+  LIVING_FLAME_CAST_HIT,
+} from './LeapingFlamesNormalizer';
 import { AFTERIMAGE_MAX_HITS } from '../../constants';
 
 const AFTERIMAGE_CAST_LINK = 'AfterimageCastLink';
@@ -114,11 +119,15 @@ const EVENT_LINKS: EventLink[] = [
   },
 ];
 
-class AfterimageCastLinkNormalizer extends EventLinkNormalizer {
+class ChronowardenCastLinkNormalizer extends EventLinkNormalizer {
+  static dependencies = {
+    ...EventLinkNormalizer.dependencies,
+    leapingFlamesNormalizer: LeapingFlamesNormalizer,
+    augCastLinkNormalizer: CastLinkNormalizer,
+  };
   constructor(options: Options) {
     super(options, EVENT_LINKS);
-    this.active = this.selectedCombatant.hasTalent(TALENTS.AFTERIMAGE_TALENT);
-    this.priority += 100;
+    this.active = this.selectedCombatant.hasTalent(TALENTS.CHRONO_FLAME_TALENT);
   }
 }
 
@@ -134,6 +143,14 @@ export function getChronoFlameHealLink(event: HealEvent): HealEvent | undefined 
   return GetRelatedEvent<HealEvent>(event, CHRONO_FLAME_HEAL_LINK);
 }
 
+export function getAfterimageEventsFromEmpowerEnd(event: EmpowerEndEvent): DamageEvent[] {
+  return GetRelatedEvents<DamageEvent>(
+    event,
+    AFTERIMAGE_CAST_LINK,
+    (e): e is DamageEvent => e.type === EventType.Damage,
+  );
+}
+
 function isNotFromOtherLFSources(event: DamageEvent): boolean {
   return (
     !HasRelatedEvent(event, LIVING_FLAME_CAST_HIT) &&
@@ -142,4 +159,4 @@ function isNotFromOtherLFSources(event: DamageEvent): boolean {
   );
 }
 
-export default AfterimageCastLinkNormalizer;
+export default ChronowardenCastLinkNormalizer;

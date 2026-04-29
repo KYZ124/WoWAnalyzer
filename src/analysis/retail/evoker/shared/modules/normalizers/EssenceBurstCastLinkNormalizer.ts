@@ -6,6 +6,7 @@ import {
   ApplyBuffEvent,
   ApplyBuffStackEvent,
   CastEvent,
+  DamageEvent,
   EventType,
   GetRelatedEvent,
   GetRelatedEvents,
@@ -22,6 +23,9 @@ import {
   RISING_FURY_MAX_STACKS,
   RISEN_FURY_EB_INTERVAL_MS,
 } from 'analysis/retail/evoker/devastation/constants';
+import ChronowardenCastLinkNormalizer, {
+  isFromAfterimageDamage,
+} from 'analysis/retail/evoker/shared/modules/normalizers/ChronowardenCastLinkNormalizer';
 
 export const EB_GENERATION_EVENT_TYPES = [
   EventType.RefreshBuff,
@@ -40,6 +44,7 @@ const EB_FROM_PRESCIENCE = 'ebFromPrescience';
 const EB_FROM_LF_CAST = 'ebFromLFCast';
 const EB_FROM_LF_HEAL = 'ebFromLFHeal'; // Specifically used for Leaping Flames analysis
 const ESSENCE_BURST_BUFFER = 40; // Sometimes the EB comes a bit early/late
+const ESSENCE_BURST_AFTERIMAGE_BUFFER = 500; // These tend to come ~300 ms before the Living Flame damage
 const EB_LF_CAST_BUFFER = 1_000;
 
 const EB_FROM_RISEN_FURY = 'ebFromRisenFury';
@@ -50,6 +55,8 @@ const EB_DIVERTED_POWER_BUFFER = 100; // These for some reason have longer delay
 const ESSENCE_BURST_CONSUME = 'EssenceBurstConsume';
 
 const EB_FROM_ESSENCE_WELL = 'ebFromEssenceWell';
+
+const EB_FROM_AFTERIMAGE = 'ebFromAfterimage';
 
 /** More deterministic links should be placed above less deterministic links
  * eg.
@@ -179,7 +186,7 @@ const EVENT_LINKS: EventLink[] = [
   {
     linkRelation: EB_FROM_LF_HEAL,
     reverseLinkRelation: EB_FROM_LF_HEAL,
-    linkingEventId: [SPELLS.LIVING_FLAME_HEAL.id, SPELLS.CHRONO_FLAME_HEAL.id],
+    linkingEventId: SPELLS.LIVING_FLAME_HEAL.id,
     linkingEventType: EventType.Heal,
     referencedEventId: EB_BUFF_IDS,
     referencedEventType: EB_GENERATION_EVENT_TYPES,
@@ -206,6 +213,25 @@ const EVENT_LINKS: EventLink[] = [
       const healProcDiff = Math.abs(linkingEvent.timestamp - referencedEvent.timestamp);
 
       return healProcDiff < castProcDiff;
+    },
+  },
+  {
+    linkRelation: EB_FROM_AFTERIMAGE,
+    reverseLinkRelation: EB_FROM_AFTERIMAGE,
+    linkingEventId: SPELLS.LIVING_FLAME_DAMAGE.id,
+    linkingEventType: EventType.Damage,
+    referencedEventId: EB_BUFF_IDS,
+    referencedEventType: EB_GENERATION_EVENT_TYPES,
+    anyTarget: true,
+    forwardBufferMs: ESSENCE_BURST_BUFFER,
+    backwardBufferMs: ESSENCE_BURST_AFTERIMAGE_BUFFER,
+    maximumLinks: 1,
+    isActive: (c) => c.hasTalent(TALENTS.AFTERIMAGE_TALENT),
+    additionalCondition(linkingEvent, referencedEvent) {
+      return (
+        hasNoGenerationLink(referencedEvent as AnyBuffEvent) &&
+        isFromAfterimageDamage(linkingEvent as DamageEvent)
+      );
     },
   },
   {
@@ -237,6 +263,7 @@ class EssenceBurstCastLinkNormalizer extends EventLinkNormalizer {
   static dependencies = {
     ...EventLinkNormalizer.dependencies,
     essenceBurstRefreshNormalizer: EssenceBurstRefreshNormalizer,
+    chronowardenCastLinkNormalizer: ChronowardenCastLinkNormalizer,
   };
   constructor(options: Options) {
     super(options, EVENT_LINKS);
@@ -256,6 +283,7 @@ export const EBSource = {
   DivertedPower: EB_FROM_DIVERTED_POWER,
   EssenceWell: EB_FROM_ESSENCE_WELL,
   RisenFury: EB_FROM_RISEN_FURY,
+  Afterimage: EB_FROM_AFTERIMAGE,
 } as const;
 export type EBSourceType = (typeof EBSource)[keyof typeof EBSource];
 
